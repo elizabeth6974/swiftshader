@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("../../src/swiftshader.gni")
-
 # Need a separate config to ensure the warnings are added to the end.
 config("swiftshader_llvm_private_config") {
   cflags = []
@@ -55,6 +53,8 @@ config("swiftshader_llvm_private_config") {
       "-msse2",
       "-Wno-header-hygiene",
       "-Wno-null-dereference",
+      "-Wno-unused-private-field",
+      "-Wno-unused-local-typedef",
     ]
   } else {
     cflags += [ "-Wno-unused-but-set-variable" ]
@@ -64,8 +64,6 @@ config("swiftshader_llvm_private_config") {
     "-Wno-deprecated-declarations",
     "-Wno-enum-compare",
     "-Wno-unused-function",
-    "-Wno-unused-local-typedef",
-    "-Wno-unused-private-field",
     "-Wno-unused-result",
     "-Wno-unused-variable",
   ]
@@ -75,7 +73,7 @@ config("swiftshader_llvm_private_config") {
   ]
 }
 
-swiftshader_source_set("swiftshader_llvm") {
+source_set("swiftshader_llvm") {
   sources = [
     "lib/Analysis/AliasAnalysis.cpp",
     "lib/Analysis/AliasSetTracker.cpp",
@@ -451,7 +449,10 @@ swiftshader_source_set("swiftshader_llvm") {
     "lib/VMCore/Verifier.cpp",
   ]
 
-  configs = [ ":swiftshader_llvm_private_config" ]
+  if (is_win) {
+    configs -= [ "//build/config/win:unicode" ]
+  }
+  configs += [ ":swiftshader_llvm_private_config" ]
 
   include_dirs = [ "lib/Target/X86" ]
 

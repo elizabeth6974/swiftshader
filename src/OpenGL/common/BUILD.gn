@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("../../swiftshader.gni")
-
 # Need a separate config to ensure the warnings are added to the end.
 config("swiftshader_opengl_common_private_config") {
   if (is_win) {
@@ -25,7 +23,7 @@ config("swiftshader_opengl_common_private_config") {
   }
 }
 
-swiftshader_source_set("swiftshader_opengl_common") {
+source_set("swiftshader_opengl_common") {
   sources = [
     "Image.cpp",
     "MatrixStack.cpp",
@@ -33,7 +31,7 @@ swiftshader_source_set("swiftshader_opengl_common") {
     "debug.cpp",
   ]
 
-  configs = [ ":swiftshader_opengl_common_private_config" ]
+  configs += [ ":swiftshader_opengl_common_private_config" ]
 
   include_dirs = [
     "..",

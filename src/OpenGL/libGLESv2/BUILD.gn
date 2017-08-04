@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("../../swiftshader.gni")
-
 # Need a separate config to ensure the warnings are added to the end.
 config("swiftshader_libGLESv2_private_config") {
   defines = [
@@ -28,7 +26,9 @@ config("swiftshader_libGLESv2_private_config") {
       "/wd5030",  # attribute is not recognized
     ]
 
-    defines += [ "GL_APICALL=" ]
+    defines += [
+      "GL_APICALL=",
+    ]
 
     if (is_clang) {
       defines += [
@@ -50,7 +50,7 @@ config("swiftshader_libGLESv2_private_config") {
   }
 }
 
-swiftshader_shared_library("swiftshader_libGLESv2") {
+shared_library("swiftshader_libGLESv2") {
   if (!is_mac) {
     output_name = "libGLESv2"
     output_dir = "$root_out_dir/swiftshader"
@@ -89,6 +89,7 @@ swiftshader_shared_library("swiftshader_libGLESv2") {
   ]
 
   if (is_win) {
+    configs -= [ "//build/config/win:unicode" ]
     ldflags = [ "/DEF:" + rebase_path("libGLESv2.def", root_build_dir) ]
   } else if (is_mac) {
     ldflags = [ "-Wl,-install_name,@rpath/libswiftshader_libGLESv2.dylib" ]
@@ -97,7 +98,12 @@ swiftshader_shared_library("swiftshader_libGLESv2") {
         [ "-Wl,--version-script=" + rebase_path("exports.map", root_build_dir) ]
   }
 
-  configs = [ ":swiftshader_libGLESv2_private_config" ]
+  configs -= [ "//build/config/compiler:chromium_code" ]
+  configs += [
+    "//build/config/compiler:no_chromium_code",
+    "//third_party/swiftshader:swiftshader_config",
+    ":swiftshader_libGLESv2_private_config",
+  ]
 
   include_dirs = [
     "../../../include",

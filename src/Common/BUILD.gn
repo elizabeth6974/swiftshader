@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("../swiftshader.gni")
-
 # Need a separate config to ensure the warnings are added to the end.
 config("swiftshader_common_private_config") {
   if (is_win) {
@@ -26,7 +24,7 @@ config("swiftshader_common_private_config") {
   }
 }
 
-swiftshader_source_set("swiftshader_common") {
+source_set("swiftshader_common") {
   sources = [
     "CPUID.cpp",
     "Configurator.cpp",
@@ -40,5 +38,5 @@ swiftshader_source_set("swiftshader_common") {
     "Timer.cpp",
   ]
 
-  configs = [ ":swiftshader_common_private_config" ]
+  configs += [ ":swiftshader_common_private_config" ]
 }
